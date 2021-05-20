@@ -33,7 +33,7 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
     device = get_device(only_cpu=only_cpu, gpu_number=gpu_number, cudnn_benchmark=True)
 
     # 2D CNNs(vgg16)
-    model = models.vgg16(pretrained=True)
+    model = models.vgg16(pretrained=True) # Pretrained on ImageNet
     model.classifier = nn.Sequential(*list(model.classifier.children())[:-3])
     model.to(device)
 
@@ -50,7 +50,7 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
     model.eval()
     with torch.no_grad():
         labels, categories = read_csv(csv_path)
-        
+
         # For saving json file
         json_path = os.path.join(save_path, csv_path.split("/")[-1].split(".")[0] + ".json")
         json_dict = {}
@@ -79,5 +79,6 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
             }
             
             print(f"{i}/{len(labels)} {sub_file_path} Frame Sampling Complete !!")
-            
-        json.dump(json_dict, indent=4)
+        
+        with open(json_path. "w") as f:
+            json.dump(json_dict, f, indent=4)

@@ -17,7 +17,6 @@ http://ec2-52-25-205-214.us-west-2.compute.amazonaws.com/files/activity_net.v1-3
 def run(official_split_path:str, save_path:str, id:int=3):
     # path checking(1)
     path_manager(official_split_path, raise_error=True, path_exist=True)
-    path_manager(save_path, create_new=True)
 
     # version id => 2(1.2), 3(1.3)
     assert id in [2, 3], f"'{id}' is not supported version id on ActivityNet :("
@@ -25,6 +24,10 @@ def run(official_split_path:str, save_path:str, id:int=3):
     train_csv_path = os.path.join(save_path, f"train{version}.csv")
     val_csv_path = os.path.join(save_path, f"val{version}.csv")
 
+    if path_manager(save_path, raise_error=False, create_new=True):
+        print(f"{save_path} path already exists skip this step...")
+        return train_csv_path, val_csv_path, None
+        
     # path checking(2)
     path_manager(train_csv_path, val_csv_path, remove_response=True)
 

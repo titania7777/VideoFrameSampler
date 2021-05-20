@@ -15,13 +15,16 @@ http://serre-lab.clps.brown.edu/wp-content/uploads/2013/10/test_train_splits.rar
 def run(official_split_path:str, save_path:str, id:int=1):
     # path checking(1)
     path_manager(official_split_path, raise_error=True, path_exist=True)
-    path_manager(save_path, create_new=True)
 
     # split id => 1, 2, 3
     assert id in [1, 2, 3], f"'{id}' is not supprted split id on HMDB51 :("
     train_csv_path = os.path.join(save_path, f"train_{id}.csv")
     val_csv_path = os.path.join(save_path, f"val_{id}.csv")
     test_csv_path = os.path.join(save_path, f"test_{id}.csv")
+
+    if path_manager(save_path, raise_error=False, create_new=True):
+        print(f"{save_path} path already exists skip this step...")
+        return train_csv_path, val_csv_path, test_csv_path
 
     # path checking(2)
     path_manager(train_csv_path, val_csv_path, test_csv_path, remove_response=True)

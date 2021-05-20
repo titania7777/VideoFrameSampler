@@ -8,7 +8,9 @@ from joblib import Parallel, delayed
 def run(videos_path:str, save_path:str, frame_size:int, qscale:float, workers:int, original_size:bool):
     # path checking
     path_manager(videos_path, raise_error=True, path_exist=True)
-    path_manager(save_path, remove_response=True)
+    if path_manager(save_path, raise_error=False, path_exist=True):
+        print(f"{save_path} path already exists skip this step...")
+        return
 
     # get videos path (start point of the path is using for flexible path parsing)
     start_point_of_path = len(os.path.join(videos_path, "hello").split("/")) - 1
