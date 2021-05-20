@@ -22,9 +22,11 @@ def run(official_split_path:str, save_path:str, id:int=1):
     val_csv_path = os.path.join(save_path, f"val_{id}.csv")
     test_csv_path = os.path.join(save_path, f"test_{id}.csv")
 
-    if path_manager(save_path, raise_error=False, create_new=True):
+    if path_manager(save_path, raise_error=False, path_exist=True):
         print(f"{save_path} path already exists skip this step...")
         return train_csv_path, val_csv_path, test_csv_path
+    else:
+        path_manager(save_path, create_new=True)
 
     # path checking(2)
     path_manager(train_csv_path, val_csv_path, test_csv_path, remove_response=True)

@@ -80,5 +80,5 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
             
             print(f"{i}/{len(labels)} {sub_file_path} Frame Sampling Complete !!")
         
-        with open(json_path. "w") as f:
+        with open(json_path, "w") as f:
             json.dump(json_dict, f, indent=4)
