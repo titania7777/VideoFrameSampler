@@ -10,6 +10,20 @@ from PIL import Image # Try using the pillow-simd !!
 from glob import glob
 from Core.utils import path_manager, read_csv, get_device
 
+"""
+Returns JSON file structure as follows
+{
+    sub_file_path: {
+        label,
+        category,
+        index: []
+    }
+}
+sub_file_path => subdirectory of the frames file path
+label => label(index number)
+category => class name corresponds to the label
+index => the sampled index number of the video frames
+"""
 def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:bool, gpu_number:int):
     # path checking
     path_manager(frames_path, raise_error=True, path_exist=True)
@@ -36,6 +50,7 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
     model.eval()
     with torch.no_grad():
         labels, categories = read_csv(csv_path)
+        
         # For saving json file
         json_path = os.path.join(save_path, csv_path.split("/")[-1].split(".")[0] + ".json")
         json_dict = {}
@@ -57,20 +72,11 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
             indices = torch.argsort(F.cosine_similarity(datas, datas.mean(dim=0, keepdim=True)), descending=True)
 
             # Save the json file
-            if not json_dict:
-                json_dict = {
-                    sub_file_path: {
-                        "label": label,
-                        "category": categories[label],
-                        "index": list(indices.cpu().numpy())
-                    }   
-                }
-            else:
-                json_dict[sub_file_path] = {
-                    "label": label,
-                    "category": categories[label],
-                    "index": list(indices.cpu().numpy())
-                }
+            json_dict[sub_file_path] = {
+                "label": label,
+                "category": categories[label],
+                "index": list(indices.cpu().numpy())
+            }
             
             print(f"{i}/{len(labels)} {sub_file_path} Frame Sampling Complete !!")
             
