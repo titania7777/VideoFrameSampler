@@ -20,9 +20,9 @@ def run(official_split_path:str, save_path:str, id:int=3):
 
     # version id => 2(1.2), 3(1.3)
     assert id in [2, 3], f"'{id}' is not supported version id on ActivityNet :("
-    json_path = os.path.join(official_split_path, f"activity_net.v1-{version}.min.json")
-    train_csv_path = os.path.join(save_path, f"train{version}.csv")
-    val_csv_path = os.path.join(save_path, f"val{version}.csv")
+    json_path = os.path.join(official_split_path, f"activity_net.v1-{id}.min.json")
+    train_csv_path = os.path.join(save_path, f"train_{id}.csv")
+    val_csv_path = os.path.join(save_path, f"val_{id}.csv")
 
     if path_manager(save_path, raise_error=False, path_exist=True):
         print(f"{save_path} path already exists skip this step...")

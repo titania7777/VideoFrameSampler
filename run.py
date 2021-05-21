@@ -2,6 +2,52 @@ import os
 import argparse
 from Core import Labeler, FrameExtractor, FrameSampler
 
+def main(official_split_path, csv_path, videos_path, frames_path, json_path, args):
+    # Labeling
+    if args.dataset_name == "UCF101":
+        train_csv_path, val_csv_path, test_csv_path = Labeler.UCF101.run(
+            official_split_path=official_split_path,
+            save_path=csv_path,
+            id=args.split_id
+        )
+    elif args.dataset_name == "HMDB51":
+        train_csv_path, val_csv_path, test_csv_path = Labeler.HMDB51.run(
+            official_split_path=official_split_path,
+            save_path=csv_path,
+            id=args.split_id
+        )
+    elif args.dataset_name == "ActivityNet":
+        train_csv_path, val_csv_path, test_csv_path = Labeler.ActivityNet.run(
+            official_split_path=official_split_path,
+            save_path=csv_path,
+            id=args.split_id
+        )
+    else:
+        print(f"'{args.dataset_name}' is not supported :(")
+        return
+
+    # Frame Extraction
+    FrameExtractor.run(
+        videos_path=ovideos_path,
+        save_path=frames_path,
+        frame_size=args.frame_size_extractor,
+        qscale=args.qscale,
+        workers=args.workers,
+        original_size=args.original_size
+    )
+
+    # Frame Sampling
+    for csv_path in [train_csv_path, val_csv_path, test_csv_path]:
+        if csv_path:
+            FrameSampler.run(
+                frames_path=frames_path,
+                csv_path=csv_path,
+                save_path=json_path,
+                frame_size=args.frame_size_sampler,
+                only_cpu=args.only_cpu,
+                gpu_number=args.gpu_number
+            )
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-path", type=str, default="./Data/")
@@ -18,30 +64,11 @@ if __name__ == "__main__":
     parser.add_argument("--only-cpu", action="store_true")
     args = parser.parse_args()
 
-    # dataset name check
-    assert args.dataset_name in ["UCF101", "HMDB51", "ActivityNet"], f"'{args.dataset_name}' is not supported :("
-    
-    # UCF101
-    train_csv_path, val_csv_path, test_csv_path = Labeler.UCF101.run(
-        official_split_path=os.path.join(args.data_path, f"{args.dataset_name}/official_split/"),
-        save_path=os.path.join(args.data_path, f"{args.dataset_name}/custom_split/"),
-        id=args.split_id
-    )
-    FrameExtractor.run(
-        videos_path=os.path.join(args.data_path, f"{args.dataset_name}/videos/"),
-        save_path=os.path.join(args.data_path, f"{args.dataset_name}/frames/"),
-        frame_size=args.frame_size_extractor,
-        qscale=args.qscale,
-        workers=args.workers,
-        original_size=args.original_size
-    )
-    for csv_path in [train_csv_path, val_csv_path, test_csv_path]:
-        if csv_path:
-            FrameSampler.run(
-                frames_path=os.path.join(args.data_path, f"{args.dataset_name}/frames/"),
-                csv_path=csv_path,
-                save_path=os.path.join(args.data_path, f"{args.dataset_name}/sampled_split/"),
-                frame_size=args.frame_size_sampler,
-                only_cpu=args.only_cpu,
-                gpu_number=args.gpu_number
-            )
+    # Path organize
+    official_split_path = os.path.join(args.data_path, f"{args.dataset_name}/official_split/")
+    csv_path = os.path.join(args.data_path, f"{args.dataset_name}/custom_split/")
+    videos_path = os.path.join(args.data_path, f"{args.dataset_name}/videos/")
+    frames_path = os.path.join(args.data_path, f"{args.dataset_name}/frames/")
+    json_path = os.path.join(args.data_path, f"{args.dataset_name}/sampled_split/")
+
+    main(official_split_path, csv_path, videos_path, frames_path, json_path, args)
