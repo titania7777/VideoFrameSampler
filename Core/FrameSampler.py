@@ -27,7 +27,14 @@ index => the sampled index number of the video frames
 def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:bool, gpu_number:int):
     # path checking
     path_manager(frames_path, raise_error=True, path_exist=True)
-    path_manager(save_path, remove_response=True, create_new=True)
+    if path_manager(save_path, raise_error=False, path_exist=True):
+        print(f"{save_path} path already exists skip this step...")
+        return
+    else:
+        path_manager(save_path, create_new=True)
+        
+    # For saving json file
+    json_path = os.path.join(save_path, csv_path.split("/")[-1].split(".")[0] + ".json")
 
     # get a device
     device = get_device(only_cpu=only_cpu, gpu_number=gpu_number, cudnn_benchmark=True)
@@ -46,15 +53,11 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
             std=[0.229, 0.224, 0.225]
         )
     ])
-    
+
     model.eval()
     with torch.no_grad():
         labels, categories = read_csv(csv_path)
-
-        # For saving json file
-        json_path = os.path.join(save_path, csv_path.split("/")[-1].split(".")[0] + ".json")
         json_dict = {}
-
         for i, (sub_file_path, label) in enumerate(labels):
             # HMDB51 has some weird filenames. Therefore we need to replace the weird name
             replaced_sub_file_path = sub_file_path.replace("]", "?")
@@ -75,10 +78,10 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
             json_dict[sub_file_path] = {
                 "label": label,
                 "category": categories[label],
-                "index": list(indices.cpu().numpy())
+                "index": indices.cpu().numpy().tolist()
             }
             
             print(f"{i}/{len(labels)} {sub_file_path} Frame Sampling Complete !!")
         
         with open(json_path, "w") as f:
-            json.dump(json_dict, f, indent=4)
+            json.dump(json_dict, f)
