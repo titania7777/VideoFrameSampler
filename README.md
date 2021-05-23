@@ -1,9 +1,9 @@
 # VideoFrameSampler
-Simple and Salient Video Frames Sampling Technique Using the Mean of Deep Features  
+Salient Video Frames Sampler for Efficient Model Training Using the Mean of Deep Features  
 
 ## Summary
 This code's purpose is to find meaningful frames.  
-This repository only provides video frame sampler codes(returns the JSON file), but we will be published training codes later!!.  
+This repository only provides video frame sampler codes(returns the JSON file), however we will be published training codes later!!.  
 
 ## Requirements
 *   opencv-python
@@ -11,7 +11,7 @@ This repository only provides video frame sampler codes(returns the JSON file), 
 *   torch
 *   [pillow-simd(optional)](https://github.com/uploadcare/pillow-simd)
 
-## Usage
+## Usage(UCF101)
 Clone this repository
 ```bash
 git clone https://github.com/titania7777/VideoFrameSampler.git
@@ -21,10 +21,14 @@ Download the dataset
 cd ./VideoFrameSampler/Data/UCF101/
 ./download.sh
 ```
-Run
+Run an Index Sampler
 ```bash
 cd ../../
-python run.py --dataset-name UCF101 --split-id 1
+python sampler_run.py --dataset-name UCF101 --split-id 1
+```
+Loading Test
+```bash
+python sampler_test.py --dataset-name UCF101 --split-id 1 --sequence-length 16
 ```
 
 ## Examples on ActivityNet
