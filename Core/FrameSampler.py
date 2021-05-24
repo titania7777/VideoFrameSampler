@@ -1,4 +1,5 @@
 import os
+import math
 import json
 import argparse
 import torch
@@ -24,7 +25,7 @@ label => label(index number)
 category => class name corresponds to the label
 index => the sampled index number of the video frames
 """
-def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:bool, gpu_number:int):
+def run(frames_path:str, csv_path:str, save_path:str, frame_batch_size:int, frame_size:int, only_cpu:bool, gpu_number:int):
     # path checking
     path_manager(frames_path, raise_error=True, path_exist=True)
 
@@ -54,29 +55,38 @@ def run(frames_path:str, csv_path:str, save_path:str, frame_size:int, only_cpu:b
         labels, categories = read_csv(csv_path)
         json_dict = {}
         for i, (sub_file_path, label) in enumerate(labels):
+            datas = []
+            
             # HMDB51 has some weird filenames. Therefore we need to replace the weird name
             replaced_sub_file_path = sub_file_path.replace("]", "?")
             
             # Transform the images to tensor
-            datas = torch.stack([
-                transform(Image.open(image_path)) for image_path in sorted(glob(os.path.join(frames_path, replaced_sub_file_path, "*")),
-                key=lambda file: int(file.split("/")[-1].split(".")[0]))
-            ], dim=0).to(device)
+            sorted_replaced_sub_file_path = sorted(glob(os.path.join(frames_path, replaced_sub_file_path, "*")))
+            # Frame Sampler Mini-Batch
+            for j in range(0, math.ceil(len(sorted_replaced_sub_file_path))):
+                sliced_sorted_replaced_sub_file_path = sorted_replaced_sub_file_path[j*frame_batch_size:(j+1)*frame_batch_size]
+                if len(sliced_sorted_replaced_sub_file_path) == 0:
+                    break
+                data = torch.stack([transform(Image.open(image_path)) for image_path in sliced_sorted_replaced_sub_file_path], dim=0).to(device)
 
-            # Extract features
-            datas = model(datas)
+                # Extract features
+                data = model(data)
+
+                # Detach from the current graph and change the device
+                datas.append(data.detach().cpu())
 
             # Index ranking
+            datas = torch.cat(datas)
             indices = torch.argsort(F.cosine_similarity(datas, datas.mean(dim=0, keepdim=True)), descending=True)
 
             # Save the json file
             json_dict[sub_file_path] = {
                 "label": label,
                 "category": categories[label],
-                "index": indices.cpu().numpy().tolist()
+                "index": indices.numpy().tolist()
             }
             
-            print(f"{i}/{len(labels)} {sub_file_path} Frame Sampling Complete !!")
+            print(f"{i+1}/{len(labels)} Frame Path: {sub_file_path} Numbef of Frames: {len(sorted_replaced_sub_file_path)} Frame Sampling Complete !!")
             
         with open(json_path, "w") as f:
             json.dump(json_dict, f)

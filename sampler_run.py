@@ -36,7 +36,7 @@ def main(official_split_path, csv_path, videos_path, frames_path, json_path, arg
         workers=args.workers,
         original_size=args.original_size
     )
-
+    
     # Frame Sampling
     if path_manager(json_path, raise_error=False, path_exist=True):
         print(f"{json_path} path already exists skip this step...")
@@ -49,6 +49,7 @@ def main(official_split_path, csv_path, videos_path, frames_path, json_path, arg
                 frames_path=frames_path,
                 csv_path=csv_path,
                 save_path=json_path,
+                frame_batch_size=args.frame_batch_size,
                 frame_size=args.frame_size_sampler,
                 only_cpu=args.only_cpu,
                 gpu_number=args.gpu_number
@@ -65,6 +66,7 @@ if __name__ == "__main__":
     parser.add_argument("--workers", type=int, default=-1)
     parser.add_argument("--original-size", action="store_true")
     # for setting the frame sampler parameters
+    parser.add_argument("--frame-batch-size", type=int, default=500)
     parser.add_argument("--frame-size-sampler", type=int, default=112)
     parser.add_argument("--gpu-number", type=int, default=0)
     parser.add_argument("--only-cpu", action="store_true")
