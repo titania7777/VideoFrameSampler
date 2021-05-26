@@ -2,8 +2,8 @@
 Salient Video Frames Sampler for Efficient Model Training Using the Mean of Deep Features  
 
 ## Summary
-This code's purpose is to find meaningful frames.  
-This repository only provides video frame sampler codes(returns the JSON file), however we will be published training codes later!!.  
+This code's purpose is to find meaningful frames in both trimmed and untrimmed video datasets. And this Sampler working only with UCF101, HMDB51, ActivityNet datasets.  
+We only provides video frame sampler codes(returns the JSON file), however, we will be published training codes which utilize this sampler results in another repository later!!.  
 
 ## Requirements
 *   opencv-python
@@ -30,6 +30,12 @@ Loading Test
 ```bash
 python sampler_test.py --dataset-name UCF101 --split-id 1 --sequence-length 16
 ```
+
+## Sampled Annotations
+We provide our sampler results here
+### [Download UCF101 Sampled Annotations](https://www.dropbox.com/s/lue5oeibp2s2r73/UCF101.zip?dl=0)  
+### [Download HMDB51 Sampled Annotations](https://www.dropbox.com/s/34v3o8d1ujlqk1h/HMDB51.zip?dl=0)  
+### [Download ActivityNet Sampled Annotations](https://www.dropbox.com/s/v87mos9yocsyl3p/ActivityNet.zip?dl=0)  
 
 ## Examples on ActivityNet
 ### Kayaking(Uniform)
