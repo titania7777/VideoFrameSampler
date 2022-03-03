@@ -33,9 +33,9 @@ python sampler_test.py --dataset-name UCF101 --split-id 1 --sequence-length 16
 
 ## Sampled Annotations
 We provide our sampler results here
-### [Download UCF101 Sampled Annotations](https://www.dropbox.com/s/j4brxpdcqsp848n/ucf101_labels.zip?dl=0)  
-### [Download HMDB51 Sampled Annotations](https://www.dropbox.com/s/7r9ouxz9c4ai5ex/hmdb51_labels.zip?dl=0)  
-### [Download ActivityNet Sampled Annotations](https://www.dropbox.com/s/hgnruj6vvol2pk1/activitynet_labels.zip?dl=0)  
+### [Download UCF101 Sampled Annotations](https://www.dropbox.com/s/3t3u0a12f9x7kww/UCF101.zip?dl=0)  
+### [Download HMDB51 Sampled Annotations](https://www.dropbox.com/s/p7l0o95das8w2o6/HMDB51.zip?dl=0)  
+### [Download ActivityNet Sampled Annotations](https://www.dropbox.com/s/2mu8hi795f3dsum/ActivityNet.zip?dl=0)  
 
 ## Examples on ActivityNet
 ### Kayaking(Uniform)
