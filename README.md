@@ -3,7 +3,7 @@ Salient Video Frames Sampler for Efficient Model Training Using the Mean of Deep
 
 ## Summary
 This code's purpose is to find meaningful frames in both trimmed and untrimmed video datasets. And this Sampler working only with UCF101, HMDB51, ActivityNet datasets.  
-We only provides video frame sampler codes(returns the JSON file), however, we will be published training codes which utilize this sampler results in another repository later!!.  
+We only provides video frame sampler codes(returns the JSON file), however, we will be published training codes which utilize this sampler results in another repository later!!.
 
 ## Requirements
 *   opencv-python
@@ -49,3 +49,14 @@ We provide our sampler results here
 
 ### Laying Tile(Our)
 <img align="center" src="figures/4.PNG" width="750">
+
+## Citation
+If you use this code in your work, please cite our work
+```bibtex
+@inproceedings{SalientFrameSampler2021,
+    author={Hyeok Yoon and Young-Gi Kim and Ji-Hyeong Han},
+    title={Salient Video Frames Sampling Method Using the Mean of Deep Features for Efficient Model Training},
+    booktitle={Proceedings of the 2021 Korean Institute of Broadcast and Media Engineers Summer Conference},
+    pages={318-321},
+    year={2021},
+}
